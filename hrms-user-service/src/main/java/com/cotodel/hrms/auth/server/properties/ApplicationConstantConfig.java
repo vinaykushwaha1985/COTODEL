@@ -12,8 +12,12 @@ public class ApplicationConstantConfig {
 	
 	@Value("${auth.token.get.url}")
 	public String getTokenUrl;	
+	
 	@Value("${email.token.verify.url}")
 	public String emailVerifyUrl;	
+	
+	@Value("${otp.token.sender.url}")
+	public String otpSenderUrl;
 	
 	
 }

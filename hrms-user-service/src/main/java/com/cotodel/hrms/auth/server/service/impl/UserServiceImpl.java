@@ -183,6 +183,12 @@ public class UserServiceImpl implements UserService {
 		return MessageConstant.RESPONSE_FAILED;
 	}
 
+	@Override
+	public String sendSmsOtp(String mobile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 

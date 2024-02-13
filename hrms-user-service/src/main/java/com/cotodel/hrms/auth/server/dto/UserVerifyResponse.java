@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserVerifyResponse {
 	
-	  private boolean verifyStatus;
+	  private boolean status;
 	  private String txnId;
 	  private String timestamp;
 }
