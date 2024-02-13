@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.cotodel.hrms.auth.server.model.UserEntity;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, String> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	
 
 	  @Query("select s  from UserEntity s where s.username = ?1")

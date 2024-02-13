@@ -114,7 +114,7 @@ public class HrmsSecurityFilter implements Filter{
 		if(requestURI!=null && excludedValidationApi.contains(requestURI))
 			authAction=true;
 		else
-		jwtUtilsService.validateJwtToken(authToken,companyId);
+			authAction=jwtUtilsService.validateJwtToken(authToken,companyId);
 			
 		}else {
 			logger.info("Token Authentication is skipped");

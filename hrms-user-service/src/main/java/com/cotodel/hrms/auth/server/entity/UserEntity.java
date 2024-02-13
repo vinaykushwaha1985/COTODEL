@@ -1,16 +1,12 @@
 package com.cotodel.hrms.auth.server.entity;
 
 
-/**
- * @author vinay
- */
-
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -63,7 +59,9 @@ public class UserEntity implements Serializable{
     
     @OneToMany
    	@JoinTable(name = "h_user_emp", joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-   	private UserEmpEntity userEmpEntity ;
-	 
+    private List<UserEmpEntity> userEmpEntity ;
+   // @OneToMany
+//    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="user")
+//    private List<UserEmpEntity> userEmpEntity ;
     
 }

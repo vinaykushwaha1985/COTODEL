@@ -8,6 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.cotodel.hrms.auth.server.model.SmsOtpEntity;
 
-public interface SmsOtpRepository extends CrudRepository<SmsOtpEntity, Long> {
+public interface SmsOtpRepository extends CrudRepository<SmsOtpEntity, Integer> {
 
 }

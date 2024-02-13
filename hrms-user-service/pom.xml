@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cotodel.hrms</groupId>
-	<artifactId>hrms-auth-server</artifactId>
+	<artifactId>hrms-user-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>hrms-user-service</name>
 	<description>Hrms user auth server</description>

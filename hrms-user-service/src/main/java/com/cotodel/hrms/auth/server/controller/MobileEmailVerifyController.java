@@ -1,20 +1,31 @@
 package com.cotodel.hrms.auth.server.controller;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cotodel.hrms.auth.server.dto.UserRequest;
+import com.cotodel.hrms.auth.server.dto.UserSignUpResponse;
+import com.cotodel.hrms.auth.server.dto.UserVerifyResponse;
 import com.cotodel.hrms.auth.server.entity.RoleMaster;
+import com.cotodel.hrms.auth.server.entity.UserEntity;
 import com.cotodel.hrms.auth.server.exception.ApiError;
+import com.cotodel.hrms.auth.server.service.UserService;
+import com.cotodel.hrms.auth.server.util.MessageConstant;
+import com.cotodel.hrms.auth.server.util.TransactionManager;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,6 +39,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public class MobileEmailVerifyController {
 		
 
+	@Autowired
+	UserService userService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(RolesController.class);
     
@@ -109,19 +122,34 @@ public class MobileEmailVerifyController {
 	    @ApiResponse(responseCode = "400",description = "Request Parameter's Validation Failed", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ApiError.class))),
 	    @ApiResponse(responseCode = "404",description = "Request Resource was not found", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ApiError.class))),
 	    @ApiResponse(responseCode = "500",description = "System down/Unhandled Exceptions", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ApiError.class)))})
-	    @RequestMapping(value = "/sendEmailVerifyLink",produces = {"application/json"}, consumes = {"application/json","application/text"},
-	    method = RequestMethod.POST)
-	    public ResponseEntity<Object> sendLinkToEmail(@Valid @RequestBody UserRequest userReq) {
+	    @RequestMapping(value = "/sendEmailVerifyLink/{token}/{emailbyt}",produces = {"application/json"}, consumes = {"application/json","application/text"},
+	    method = RequestMethod.GET)
+	    public ResponseEntity<Object> sendLinkToEmail(HttpServletRequest request, @PathVariable("token") String token
+				,@PathVariable("emailbyt") String emailbyt,@Valid @RequestBody UserRequest userReq) {
 	    	logger.info("inside token generation");
 	    	List<RoleMaster> roleMaster=null;
-	    	try {
-	    		
+	    	UserEntity userForm = new UserEntity();
+	    	try {    		
 	    	
 	    		// write code here
+	    		//userService.sendEmailToEmployee(userReq);
 	    		
-	    	 if(roleMaster!=null)
-	    		 return ResponseEntity
-	 	                .ok(roleMaster);
+	    		System.out.println("In Request Mapping"); 
+				byte[] tokenBytes = Base64.getDecoder().decode(token);//parseBase64Binary(token + "==");
+				String mobileno = new String(tokenBytes, StandardCharsets.UTF_8);
+				byte[] emailBytes = Base64.getDecoder().decode(emailbyt);
+				String emailAgain = new String(emailBytes, StandardCharsets.UTF_8);
+				System.out.println(mobileno + " ------ "+emailAgain);
+				
+				
+				userForm.setEmail(mobileno);
+				userForm.setMobile(mobileno);
+				//model.addAttribute("userform",userForm);
+				return ResponseEntity.ok(new UserSignUpResponse(true,userForm,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp(),""));
+	    		
+//	    	 if(roleMaster!=null)
+//	    		 return ResponseEntity
+//	 	                .ok(roleMaster);
 	    	 
 	    	 
 	    	}catch (Exception e) {
@@ -129,8 +157,7 @@ public class MobileEmailVerifyController {
 	    		// TODO: handle exception
 			}
 	        
-	        return ResponseEntity
-	                .ok(null);
+	    	return ResponseEntity.ok(new UserSignUpResponse(false,userForm,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp(),""));
 	          
 	        
 	    }
@@ -152,14 +179,21 @@ public class MobileEmailVerifyController {
 	    public ResponseEntity<Object> verifyLinkFromEmail(@Valid @RequestBody UserRequest userReq) {
 	    	logger.info("inside token generation");
 	    	List<RoleMaster> roleMaster=null;
+	    	String response="";
 	    	try {
 	    		
-	    	
 	    		// write code here
+	    		response = userService.verifyEmailUpdate(userReq.getEmail());
 	    		
-	    	 if(roleMaster!=null)
-	    		 return ResponseEntity
-	 	                .ok(roleMaster);
+	    		if (response.equalsIgnoreCase(MessageConstant.RESPONSE_SUCCESS)) {
+	    			return ResponseEntity.ok(new UserVerifyResponse(true,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+	    		}else {
+	    			return ResponseEntity.ok(new UserVerifyResponse(false,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+	    		}
+	    		
+//	    	 if(roleMaster!=null)
+//	    		 return ResponseEntity
+//	 	                .ok(roleMaster);
 	    	 
 	    	 
 	    	}catch (Exception e) {
@@ -167,8 +201,7 @@ public class MobileEmailVerifyController {
 	    		// TODO: handle exception
 			}
 	        
-	        return ResponseEntity
-	                .ok(null);
+	    	return ResponseEntity.ok(new UserVerifyResponse(false,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
 	          
 	        
 	    }
