@@ -7,16 +7,19 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cotodel.hrms.auth.server.dto.UserOtpResponse;
 import com.cotodel.hrms.auth.server.dto.UserRequest;
 import com.cotodel.hrms.auth.server.dto.UserSignUpResponse;
 import com.cotodel.hrms.auth.server.dto.UserVerifyResponse;
@@ -42,7 +45,7 @@ public class MobileEmailVerifyController {
 	@Autowired
 	UserService userService;
 	
-	private static final Logger logger = LoggerFactory.getLogger(RolesController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MobileEmailVerifyController.class);
     
 	
 	 @Operation(summary = "This API will provide the User Mobile Verify Details ", security = {
@@ -57,14 +60,32 @@ public class MobileEmailVerifyController {
 	    public ResponseEntity<Object> sendOtp(@Valid @RequestBody UserRequest userReq) {
 	    	logger.info("inside token generation");
 	    	List<RoleMaster> roleMaster=null;
+	    	String response="";
+	    	UserEntity userEntity=null;
 	    	try {
-	    		
-	    	
 	    		// write code here
 	    		
-	    	 if(roleMaster!=null)
-	    		 return ResponseEntity
-	 	                .ok(roleMaster);
+	    		userEntity=userService.checkUserMobile(userReq.getMobile());
+	    		if(userEntity!=null && userEntity.getStatus()==MessageConstant.ONE ) {
+	    			response=userService.sendSmsOtp(userReq.getMobile());
+	    			if(!ObjectUtils.isEmpty(response)) {
+
+						JSONObject demoRes= new JSONObject(response);
+						if(Boolean.valueOf(demoRes.getString("status"))) {
+							return ResponseEntity.ok(new UserOtpResponse(true,MessageConstant.OTP_SENT,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+							
+						}else {
+							return ResponseEntity.ok(new UserOtpResponse(false,MessageConstant.OTP_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+						}
+
+					}else {
+						return ResponseEntity.ok(new UserOtpResponse(false,MessageConstant.OTP_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+					}
+	    		}
+	    		
+//	    	 if(roleMaster!=null)
+//	    		 return ResponseEntity
+//	 	                .ok(roleMaster);
 	    	 
 	    	 
 	    	}catch (Exception e) {
@@ -72,8 +93,7 @@ public class MobileEmailVerifyController {
 	    		// TODO: handle exception
 			}
 	        
-	        return ResponseEntity
-	                .ok(null);
+	    	return ResponseEntity.ok(new UserOtpResponse(false,MessageConstant.OTP_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
 	          
 	        
 	    }
