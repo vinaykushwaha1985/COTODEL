@@ -17,5 +17,5 @@ public interface UserService {
 	public void sendEmailToEmployee(UserRequest user);
 	public String getToken(String compid);
 	String verifyEmailUpdate(String email);
-	String sendSmsOtp(String mobile);
+	String sendSmsOtp(String authToken,String mobile);
 }

@@ -19,5 +19,7 @@ public class ApplicationConstantConfig {
 	@Value("${otp.token.sender.url}")
 	public String otpSenderUrl;
 	
+	@Value("${otp.templateid.sender.token}")
+	public String templateId;
 	
 }
