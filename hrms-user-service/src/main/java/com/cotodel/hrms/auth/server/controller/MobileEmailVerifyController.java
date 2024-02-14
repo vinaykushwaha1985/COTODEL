@@ -111,14 +111,34 @@ public class MobileEmailVerifyController {
 	    @ApiResponse(responseCode = "500",description = "System down/Unhandled Exceptions", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ApiError.class)))})
 	    @RequestMapping(value = "/verifyOtp",produces = {"application/json"}, consumes = {"application/json","application/text"},
 	    method = RequestMethod.POST)
-	    public ResponseEntity<Object> verifyOtp(@Valid @RequestBody UserRequest userReq) {
+	    public ResponseEntity<Object> verifyOtp(HttpServletRequest request,@Valid @RequestBody UserRequest userReq) {
 	    	logger.info("inside token generation");
 	    	List<RoleMaster> roleMaster=null;
+	    	String response="";
+	    	UserEntity userEntity=null;
 	    	try {
 	    		
 	    		// write code here
-	    		
-	    	 if(roleMaster!=null)
+	    		String authToken=request.getHeader("Authorization");
+	    		userEntity=userService.checkUserMobile(userReq.getMobile());
+	    		if(userEntity!=null && userEntity.getStatus()==MessageConstant.ONE ) {
+	    			//response=userService.verifySmsOtp(authToken,userReq.getMobile(),userReq.getOtp());
+	    			response="{\"errCode\":\"\",\"errDes\":\"\",\"txn\":\"NHA:53029a89-ae73-4e52-bdfc-0f47d237a6fc\",\"ts\":\"2024-02-14T15:12:24.240+05:24\",\"status\":\"true\"}";
+	    			
+	    			if(!ObjectUtils.isEmpty(response)) {
+
+						JSONObject demoRes= new JSONObject(response);
+						if(Boolean.valueOf(demoRes.getString("status"))) {
+							return ResponseEntity.ok(new UserOtpResponse(true,MessageConstant.RESPONSE_SUCCESS,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+							
+						}else {
+							return ResponseEntity.ok(new UserOtpResponse(false,MessageConstant.RESPONSE_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+						}
+
+					}else {
+						return ResponseEntity.ok(new UserOtpResponse(false,MessageConstant.RESPONSE_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+					}
+	    		}
 	    		 return ResponseEntity
 	 	                .ok(roleMaster);
 	    	 

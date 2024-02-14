@@ -18,4 +18,5 @@ public interface UserService {
 	public String getToken(String compid);
 	String verifyEmailUpdate(String email);
 	String sendSmsOtp(String authToken,String mobile);
+	String verifySmsOtp(String authToken,String mobile, String pwd);
 }
