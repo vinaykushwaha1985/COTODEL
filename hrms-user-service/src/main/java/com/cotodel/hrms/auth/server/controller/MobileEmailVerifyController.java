@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cotodel.hrms.auth.server.dto.UserOtpResponse;
+import com.cotodel.hrms.auth.server.dto.UserOtpVerifyResponse;
 import com.cotodel.hrms.auth.server.dto.UserRequest;
 import com.cotodel.hrms.auth.server.dto.UserSignUpResponse;
 import com.cotodel.hrms.auth.server.dto.UserVerifyResponse;
@@ -129,18 +130,17 @@ public class MobileEmailVerifyController {
 
 						JSONObject demoRes= new JSONObject(response);
 						if(Boolean.valueOf(demoRes.getString("status"))) {
-							return ResponseEntity.ok(new UserOtpResponse(true,MessageConstant.RESPONSE_SUCCESS,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+							return ResponseEntity.ok(new UserOtpVerifyResponse(true,MessageConstant.RESPONSE_SUCCESS,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp(),userEntity));
 							
 						}else {
-							return ResponseEntity.ok(new UserOtpResponse(false,MessageConstant.RESPONSE_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+							return ResponseEntity.ok(new UserOtpVerifyResponse(false,MessageConstant.RESPONSE_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp(),userEntity));
 						}
 
 					}else {
-						return ResponseEntity.ok(new UserOtpResponse(false,MessageConstant.RESPONSE_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
+						return ResponseEntity.ok(new UserOtpVerifyResponse(false,MessageConstant.RESPONSE_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp(),userEntity));
 					}
 	    		}
-	    		 return ResponseEntity
-	 	                .ok(roleMaster);
+	    		
 	    	 
 	    	 
 	    	}catch (Exception e) {
@@ -148,8 +148,7 @@ public class MobileEmailVerifyController {
 	    		// TODO: handle exception
 			}
 	        
-	        return ResponseEntity
-	                .ok(null);
+	    	return ResponseEntity.ok(new UserOtpVerifyResponse(false,MessageConstant.RESPONSE_FAILED,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp(),userEntity));
 	          
 	        
 	    }
