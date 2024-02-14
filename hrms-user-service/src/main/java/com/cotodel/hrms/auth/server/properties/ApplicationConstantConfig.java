@@ -22,4 +22,10 @@ public class ApplicationConstantConfig {
 	@Value("${otp.templateid.sender.token}")
 	public String templateId;
 	
+	@Value("${otp.token.verify.url}")
+	public String otpVerifyUrl;
+	
+	@Value("${otp.templateid.verify.token}")
+	public String templateVerifyId;
+	
 }

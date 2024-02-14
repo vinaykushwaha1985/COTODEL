@@ -207,5 +207,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	public  String verifySmsOtp(String authToken,String mobile,String otp) {
+		return  CommonUtility.userRequest(authToken,verifySmsOtpRequest(mobile,otp), applicationConstantConfig.otpVerifyUrl);
+	}
+	
+	public  String verifySmsOtpRequest(String mobile,String otp){
+		JSONObject data= new JSONObject();
+		data.put("mobile", mobile);
+		data.put("otp", otp);
+		data.put("templateid", applicationConstantConfig.templateVerifyId);
+		logger.info("Verify SMS OTP Request JSON========"+data.toString());
+		return data.toString();
+	}
 
 }
