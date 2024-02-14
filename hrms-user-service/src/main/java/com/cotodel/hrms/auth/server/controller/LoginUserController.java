@@ -49,6 +49,7 @@ private static final Logger logger = LoggerFactory.getLogger(LoginUserController
     	try {
     		
     		
+			
     		
     	 userEntity=	userService.checkUserDetails(userReq.getUsername());
     	 
