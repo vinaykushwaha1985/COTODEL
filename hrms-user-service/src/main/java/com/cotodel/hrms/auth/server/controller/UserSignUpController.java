@@ -60,16 +60,16 @@ public class UserSignUpController {
 	    	try {	    		
 	    		String companyId = request.getHeader("companyId");
 				SetDatabaseTenent.setDataSource(companyId);
-	    	 userEntity=	userService.saveUserDetails(userReq);
+	    	    userEntity=	userService.saveUserDetails(userReq);
 	    		
 	    	 if(userEntity!=null) {	    
 	    		 userService.sendEmailToEmployee(userReq);
-	    		 responseToken = userService.getToken(companyId);
-					//String authToken = "";
-					if (!ObjectUtils.isEmpty(responseToken)) {
-						JSONObject getTokenRes = new JSONObject(responseToken);
-						authToken = getTokenRes.getString("access_token");
-					}
+//	    		 responseToken = userService.getToken(companyId);
+//					//String authToken = "";
+//					if (!ObjectUtils.isEmpty(responseToken)) {
+//						JSONObject getTokenRes = new JSONObject(responseToken);
+//						authToken = getTokenRes.getString("access_token");
+//					}
 	    		 return ResponseEntity.ok(new UserSignUpResponse(true,userEntity,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp(),authToken));
 	    	 }
 	    	 
