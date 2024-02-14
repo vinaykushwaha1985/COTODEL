@@ -8,9 +8,13 @@ import java.util.Properties;
 import javax.mail.Session;
 import javax.transaction.Transactional;
 
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.cotodel.hrms.auth.server.controller.MobileEmailVerifyController;
 import com.cotodel.hrms.auth.server.dao.UserDetailsDao;
 import com.cotodel.hrms.auth.server.dto.UserRequest;
 import com.cotodel.hrms.auth.server.entity.UserEmpEntity;
@@ -20,6 +24,7 @@ import com.cotodel.hrms.auth.server.service.UserService;
 import com.cotodel.hrms.auth.server.util.CommonUtility;
 import com.cotodel.hrms.auth.server.util.CopyUtility;
 import com.cotodel.hrms.auth.server.util.MessageConstant;
+import com.cotodel.hrms.auth.server.util.TransactionManager;
 
 import java.nio.charset.StandardCharsets;
 import javax.mail.*;
@@ -32,7 +37,7 @@ import javax.xml.bind.DatatypeConverter;
 @Repository
 public class UserServiceImpl implements UserService {
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	@Autowired
 	UserDetailsDao userDetailsDao;
 	
@@ -162,7 +167,9 @@ public class UserServiceImpl implements UserService {
 			if(userDetails!=null) {
 				
 						
-			userDetails.setStatus(1);				
+			userDetails.setStatus(1);
+			userDetails.setEmail_verify_status(1);
+			userDetails.setEmail_verify_date(LocalDate.now());
 			//logger.info("updateUserStatus object going to save------"+userDetails.toString());
 			
 			userDetails = userDetailsDao.saveUserDetails(userDetails);
@@ -183,13 +190,21 @@ public class UserServiceImpl implements UserService {
 		return MessageConstant.RESPONSE_FAILED;
 	}
 
+	
+
 	@Override
-	public String sendSmsOtp(String mobile) {
-		// TODO Auto-generated method stub
-		return null;
+	public String sendSmsOtp(String authToken,String mobile) {
+		return CommonUtility.userRequest(authToken,sendSmsOtpRequest(mobile),applicationConstantConfig.otpSenderUrl);
+		
 	}
 
-
+	public  String sendSmsOtpRequest(String mobile){
+		JSONObject data= new JSONObject();
+		data.put("mobile", mobile);
+		data.put("templateid", applicationConstantConfig.templateId);
+		logger.info("send SMS OTP Request"+data);
+		return data.toString();
+	}
 
 
 

@@ -57,17 +57,17 @@ public class MobileEmailVerifyController {
 	    @ApiResponse(responseCode = "500",description = "System down/Unhandled Exceptions", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ApiError.class)))})
 	    @RequestMapping(value = "/getOtp",produces = {"application/json"}, consumes = {"application/json","application/text"},
 	    method = RequestMethod.POST)
-	    public ResponseEntity<Object> sendOtp(@Valid @RequestBody UserRequest userReq) {
+	    public ResponseEntity<Object> sendOtp(HttpServletRequest request,@Valid @RequestBody UserRequest userReq) {
 	    	logger.info("inside token generation");
 	    	List<RoleMaster> roleMaster=null;
 	    	String response="";
 	    	UserEntity userEntity=null;
 	    	try {
 	    		// write code here
-	    		
+	    		String authToken=request.getHeader("Authorization");
 	    		userEntity=userService.checkUserMobile(userReq.getMobile());
 	    		if(userEntity!=null && userEntity.getStatus()==MessageConstant.ONE ) {
-	    			response=userService.sendSmsOtp(userReq.getMobile());
+	    			response=userService.sendSmsOtp(authToken,userReq.getMobile());
 	    			if(!ObjectUtils.isEmpty(response)) {
 
 						JSONObject demoRes= new JSONObject(response);
