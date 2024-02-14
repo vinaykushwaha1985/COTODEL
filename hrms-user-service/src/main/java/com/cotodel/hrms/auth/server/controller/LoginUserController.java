@@ -54,7 +54,7 @@ private static final Logger logger = LoggerFactory.getLogger(LoginUserController
     	 userEntity=	userService.checkUserDetails(userReq.getUsername());
     	 
     	 // write code here 
-    	 
+    	  //test commit change 
     		
     	 if(userEntity!=null)
     		 return ResponseEntity
