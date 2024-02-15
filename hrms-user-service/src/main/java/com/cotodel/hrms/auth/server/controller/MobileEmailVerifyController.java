@@ -231,10 +231,6 @@ public class MobileEmailVerifyController {
 	    			return ResponseEntity.ok(new UserVerifyResponse(false,TransactionManager.getTransactionId(),TransactionManager.getCurrentTimeStamp()));
 	    		}
 	    		
-//	    	 if(roleMaster!=null)
-//	    		 return ResponseEntity
-//	 	                .ok(roleMaster);
-	    	 
 	    	 
 	    	}catch (Exception e) {
 				
