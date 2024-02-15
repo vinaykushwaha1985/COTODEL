@@ -16,5 +16,5 @@ public class UserOtpVerifyResponse {
 	  private String message;
 	  private String txnId;
 	  private String timestamp;
-	  private UserEntity user;
+	  private UserEntity data;
 }
