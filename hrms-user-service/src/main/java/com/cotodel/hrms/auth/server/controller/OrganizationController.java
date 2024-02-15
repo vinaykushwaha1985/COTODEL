@@ -51,6 +51,7 @@ public class OrganizationController {
 	    	List<OrganizationMaster> organizationMasters=null;
 	    	try {
 	    		
+	    		
 	    		organizationMasters=organizationMasterService.getOrganizationMaster();
 	    		
 	    	 if(organizationMasters!=null)
